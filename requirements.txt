@@ -1,6 +1,6 @@
 joblib
 flaml
-sklearn
+scikit-learn
 StandardScaler
 OneHotEncoder
 LabelEncoder
