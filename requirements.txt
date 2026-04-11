@@ -2,10 +2,5 @@ joblib
 streamlit
 pandas
 kagglehub
-ast
 flaml
 scikit-learn
-StandardScaler
-OneHotEncoder
-LabelEncoder
-MultiLabelBinarizer
