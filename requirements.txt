@@ -3,4 +3,5 @@ streamlit
 pandas
 kagglehub
 flaml
+xgboost
 scikit-learn
