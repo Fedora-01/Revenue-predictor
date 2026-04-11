@@ -1,4 +1,8 @@
 joblib
+streamlit
+pandas
+kagglehub
+ast
 flaml
 scikit-learn
 StandardScaler
