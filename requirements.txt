@@ -1,2 +1,6 @@
 joblib
 flaml
+StandardScaler
+OneHotEncoder
+LabelEncoder
+MultiLabelBinarizer
