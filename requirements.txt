@@ -4,4 +4,6 @@ pandas
 kagglehub
 flaml
 xgboost
+lightgbm
+catboost
 scikit-learn
