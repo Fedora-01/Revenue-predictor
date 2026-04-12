@@ -54,27 +54,27 @@ overview_text = st.text_area('Resumen de la película (overview)', 'A brief desc
 if st.button('Predecir Categoría de Ganancia'):
     # Creando un dataframe con los datos ingresados
     data = {
-        'title': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+       'title': ['unknown'],
         'vote_average': [vote_average],
         'vote_count': [vote_count],
         'status': [status],
-        'release_date': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'release_date': ['unknown'],
         'runtime': [runtime],
         'adult': [adult],
-        'backdrop_path': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'backdrop_path': ['unknown'],
         'budget': [budget],
-        'homepage': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'imdb_id': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'homepage': ['unknown'],
+        'imdb_id': ['unknown'],
         'original_language': [origen_language],
-        'original_title': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'overview': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'original_title': ['unknown'],
+        'overview': [overview_text],  
         'popularity': [popularity],
-        'poster_path': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'tagline': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'genres': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'production_companies': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'production_countries': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
-        'spoken_languages': ['unkown'] #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'poster_path': ['unknown'],
+        'tagline': ['unknown'],
+        'genres': [genres_input],  
+        'production_companies': [production_companies_input],  
+        'production_countries': ['unknown'],
+        'spoken_languages': ['unknown']
     }
 
     #Creacion de un dataframe con datos de entrada
