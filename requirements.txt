@@ -1,8 +1,9 @@
 streamlit
 pandas
 joblib
-scikit-learn
-flaml
-xgboost
+scikit-learn==1.6.1
+flaml==2.5.0
+xgboost==3.2.0
 lightgbm
 catboost
+numpy==2.0.2
