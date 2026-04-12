@@ -2,7 +2,6 @@ FLAML==2.5.0
 Streamlit
 joblib==1.5.3
 pandas==2.2.2
-Python == 3.12.13
 scikit-learn==1.6.1
 sklearn-compat==0.1.5
 sklearn-pandas==2.2.0
