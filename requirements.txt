@@ -1,12 +1,10 @@
 FLAML==2.5.0
+Streamlit
 joblib==1.5.3
 numpy==2.0.2
 pandas==2.2.2
 Python == 3.12.13
-scikit-image==0.25.2
 scikit-learn==1.6.1
-scipy==1.16.3
-seaborn==0.13.2
 sklearn-compat==0.1.5
 sklearn-pandas==2.2.0
 xgboost==3.2.0
