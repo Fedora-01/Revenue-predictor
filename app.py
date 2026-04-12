@@ -112,8 +112,17 @@ if st.button('Predecir Categoría de Ganancia'):
     prediction_encoded = automl_model.predict(final_input_df)
     prediction = LE.inverse_transform(prediction_encoded)
 
+
+    extra_cols = [col for col in final_input_df.columns if col not in feature_columns]
+    final_input_df = final_input_df.drop(columns=extra_cols)
+
+
+    final_input_df = final_input_df.reindex(columns=feature_columns, fill_value=0)
+    
     st.success(f'Categoría predicha: **{prediction[0]}**')
 
     with st.expander("Debug info"):
         st.write("Shape:", final_input_df.shape)
         st.write(final_input_df.head())
+
+
