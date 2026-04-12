@@ -122,6 +122,15 @@ if st.button('Predecir Categoría de Ganancia'):
     final_input_df = pd.concat([processed_df, genre_df_input, companies_df_input, overview_df_input], axis=1)
     final_input_df.columns = final_input_df.columns.astype(str)
 
+    st.write("Columnas en final_input_df:")
+    st.write(final_input_df.columns.tolist())
+
+    st.write("Primeras columnas esperadas:")
+    st.write(model_feature_names[:20])
+
+    st.write(f"Total columnas en final_input_df: {len(final_input_df.columns)}")
+    st.write(f"Total columnas esperadas: {len(model_feature_names)}")
+
     # ⭐ AQUÍ ES LO IMPORTANTE: Asegurar que tenga exactamente las mismas columnas
     # Agregar columnas faltantes con 0 si es necesario
     for col in model_feature_names:
