@@ -1,9 +1,8 @@
-streamlit
-pandas
-joblib
+streamlit==1.56.0
+joblib==1.5.3
+pandas==2.2.2
 scikit-learn==1.6.1
 flaml==2.5.0
-xgboost==3.2.0
-lightgbm
-catboost
+lightgbm==4.6.0
 numpy==2.0.2
+xgboost==3.2.0
