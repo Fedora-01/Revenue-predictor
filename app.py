@@ -112,7 +112,7 @@ if st.button('Predecir Categoría de Ganancia'):
         overview_svd_array = overview_svd_array[:100]
 
 overview_df_input = pd.DataFrame([overview_svd_array], columns=[str(i) for i in range(100)])
-    overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
+overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
 
 
 processed_df.index = [0]
