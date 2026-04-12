@@ -6,6 +6,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 import ast # Importar ast para poder parsear los Json como strings
+import numpy as np
 
 st.title('Clasificador de Ganancias de Películas de Animación')
 
@@ -100,10 +101,20 @@ if st.button('Predecir Categoría de Ganancia'):
     # Se procesa la reseña con tfid y SVD
     overview_tfidf = vectorizer.transform([overview_text])
     overview_svd_reduced = svd.transform(overview_tfidf)
-    # Se reduce la dimensionalidad para hacerla coincidir con los datos que espera el modelo (100)
+
+    # Crear un dataframe con exactamente 100 columnas (rellenando con 0 si falta)
+    overview_svd_array = overview_svd_reduced.toarray()[0]  # Obtener como array 1D
+    if len(overview_svd_array) < 100:
+        # Si tiene menos de 100, rellenar con ceros
+        overview_svd_array = np.pad(overview_svd_array, (0, 100 - len(overview_svd_array)))
+    else:
+        # Si tiene más de 100, tomar solo los primeros 100
+        overview_svd_array = overview_svd_array[:100]
+
+overview_df_input = pd.DataFrame([overview_svd_array], columns=[str(i) for i in range(100)])
     overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
 
-# Cambiar las líneas 105-115 por:
+
 processed_df.index = [0]
 genre_df_input.index = [0]
 companies_df_input.index = [0]
