@@ -118,13 +118,6 @@ if st.button('Predecir Categoría de Ganancia'):
     # Eliminar las columnas constantes antes de la predicción
     final_input_df = final_input_df.drop(columns=constant_columns_to_drop, errors='ignore')
 
-    # Guardar columnas en un archivo para depuración/comparación en Colab
-    with open('/content/streamlit_app_columns.txt', 'w') as f:
-        f.write(str(final_input_df.columns.tolist()))
-
-    st.subheader("DataFrame de entrada para la predicción:")
-    st.dataframe(final_input_df)
-
     # Realizar la predicción
     prediction_encoded = automl_model.predict(final_input_df)
     prediction_label = LE.inverse_transform(prediction_encoded)
