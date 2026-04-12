@@ -23,18 +23,20 @@ def load_artifacts():
 
     return automl_model, column_transformer, label_encoder_y, mlb_genres, mlb_companies, vectorizer, svd
 
-model_feature_names = joblib.load('model_feature_names.pkl')
 automl_model, prep, LE, mlb_genres, mlb_companies, vectorizer, svd = load_artifacts()
 
 #Columnas usadas durante el entrenamiento
 XC_names = ['vote_average', 'vote_count', 'runtime', 'adult', 'budget', 'popularity']
-XO_names_original = ['status', 'original_language']
+XO_names_original = ['status', 'original_language'] # Los nombres originales antes de aplicar el column transformer
 
-# Opciones para las características categóricas
-status_categories = prep.named_transformers_['N_num'].categories_[0].tolist()
-language_categories = prep.named_transformers_['N_num'].categories_[1].tolist()
-all_possible_genres = mlb_genres.classes_.tolist()
-all_possible_companies = mlb_companies.classes_.tolist()
+# Opciones para las características categóricas (usando los preprocesadores)
+status_categories = prep.named_transformers_['N_num'].categories_[0].tolist() #status
+language_categories = prep.named_transformers_['N_num'].categories_[1].tolist() #lenguaje
+all_possible_genres = mlb_genres.classes_.tolist() #genero
+all_possible_companies = mlb_companies.classes_.tolist() #compañia
+
+# Lista de columnas constantes identificadas que el modelo ignora
+constant_columns_to_drop = ['original_language_ch', 'original_language_ha', 'original_language_kl', 'original_language_ne', 'original_language_so', 'original_language_tk', 'original_language_zu', 'Animation']
 
 #Interfaz
 st.header('Introduce los detalles de la película:')
@@ -56,34 +58,34 @@ overview_text = st.text_area('Resumen de la película (overview)', 'A brief desc
 if st.button('Predecir Categoría de Ganancia'):
     # Creando un dataframe con los datos ingresados
     data = {
-        'title': ['unkown'],
+        'title': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
         'vote_average': [vote_average],
         'vote_count': [vote_count],
         'status': [status],
-        'release_date': ['unkown'],
+        'release_date': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
         'runtime': [runtime],
         'adult': [adult],
-        'backdrop_path': ['unkown'],
+        'backdrop_path': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
         'budget': [budget],
-        'homepage': ['unkown'],
-        'imdb_id': ['unkown'],
+        'homepage': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'imdb_id': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
         'original_language': [origen_language],
-        'original_title': ['unkown'],
-        'overview': ['unkown'],
+        'original_title': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'overview': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
         'popularity': [popularity],
-        'poster_path': ['unkown'],
-        'tagline': ['unkown'],
-        'genres': ['unkown'],
-        'production_companies': ['unkown'],
-        'production_countries': ['unkown'],
-        'spoken_languages': ['unkown']
+        'poster_path': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'tagline': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'genres': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'production_companies': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'production_countries': ['unkown'], #Valor "predeterminado" para evitar errores si no se ingresa nada
+        'spoken_languages': ['unkown'] #Valor "predeterminado" para evitar errores si no se ingresa nada
     }
 
     #Creacion de un dataframe con datos de entrada
     df_prep_transform = pd.DataFrame(data)
-    df_prep_transform = df_prep_transform[prep.feature_names_in_]
+    df_prep_transform = df_prep_transform[prep.feature_names_in_] #Reordenas columnas para que no haya problemas en la prediccion
 
-    p_features_array = prep.transform(df_prep_transform).toarray()
+    p_features_array = prep.transform(df_prep_transform).toarray() #convierte los nombres de columnas a un arreglo
 
     # Obtiene el arreglo de los nombres de las columnas
     ohe_feature_names = prep.named_transformers_['N_num'].get_feature_names_out(XO_names_original)
@@ -91,42 +93,37 @@ if st.button('Predecir Categoría de Ganancia'):
     processed_df = pd.DataFrame(p_features_array, columns=initial_processed_columns)
 
     #Se procesan los generos con mlb
-    genre_encoded_input = mlb_genres.transform([genres_input])
+    genre_encoded_input = mlb_genres.transform([genres_input]) #mlb espera una lista de listas; a pesar de que solo se hable de una pelicula se encapsula en una lista para evitar errores
     genre_df_input = pd.DataFrame(genre_encoded_input, columns=mlb_genres.classes_)
 
-    #Se procesan las casas productoras
+    #Se procesan las casas productoras (misma manera que generos)
     companies_encoded_input = mlb_companies.transform([production_companies_input])
     companies_df_input = pd.DataFrame(companies_encoded_input, columns=mlb_companies.classes_)
 
     # Se procesa la reseña con tfid y SVD
     overview_tfidf = vectorizer.transform([overview_text])
     overview_svd_reduced = svd.transform(overview_tfidf)
+    # Se reduce la dimensionalidad para hacerla coincidir con los datos que espera el modelo (100)
+    overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
 
-    # Crear un dataframe con exactamente 100 columnas
-    overview_svd_array = overview_svd_reduced[0]
-    if len(overview_svd_array) < 100:
-        overview_svd_array = np.pad(overview_svd_array, (0, 100 - len(overview_svd_array)))
-    else:
-        overview_svd_array = overview_svd_array[:100]
-
-    overview_df_input = pd.DataFrame([overview_svd_array], columns=[str(i) for i in range(100)])
-
-    # Establecer índices
+    # Se concatena todo y se asegura de tener la dimension correcta para que el programa no truene
     processed_df.index = [0]
     genre_df_input.index = [0]
     companies_df_input.index = [0]
     overview_df_input.index = [0]
 
-    # Concatenar todos los dataframes
     final_input_df = pd.concat([processed_df, genre_df_input, companies_df_input, overview_df_input], axis=1)
+    final_input_df.columns = final_input_df.columns.astype(str)
 
-    # Asegurar que tenga exactamente las mismas columnas
-    for col in model_feature_names:
-        if col not in final_input_df.columns:
-            final_input_df[col] = 0
+    # Eliminar las columnas constantes antes de la predicción
+    final_input_df = final_input_df.drop(columns=constant_columns_to_drop, errors='ignore')
 
-    # Seleccionar solo las columnas que el modelo espera, en el orden correcto
-    final_input_df = final_input_df[model_feature_names]
+    # Guardar columnas en un archivo para depuración/comparación en Colab
+    with open('/content/streamlit_app_columns.txt', 'w') as f:
+        f.write(str(final_input_df.columns.tolist()))
+
+    st.subheader("DataFrame de entrada para la predicción:")
+    st.dataframe(final_input_df)
 
     # Realizar la predicción
     prediction_encoded = automl_model.predict(final_input_df)
