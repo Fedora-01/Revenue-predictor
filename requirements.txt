@@ -1,9 +1,8 @@
-FLAML
-Streamlit
-joblib
+streamlit
 pandas
+joblib
 scikit-learn
-sklearn-compat
-sklearn-pandas
+flaml
 xgboost
-ast
+lightgbm
+catboost
