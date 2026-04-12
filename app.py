@@ -97,13 +97,12 @@ if st.button('Predecir Categoría de Ganancia'):
     #Se procesan las casas productoras (misma manera que generos)
     companies_encoded_input = mlb_companies.transform([production_companies_input])
     companies_df_input = pd.DataFrame(companies_encoded_input, columns=mlb_companies.classes_)
-
     # Se procesa la reseña con tfid y SVD
     overview_tfidf = vectorizer.transform([overview_text])
     overview_svd_reduced = svd.transform(overview_tfidf)
 
     # Crear un dataframe con exactamente 100 columnas (rellenando con 0 si falta)
-    overview_svd_array = overview_svd_reduced.toarray()[0]  # Obtener como array 1D
+    overview_svd_array = overview_svd_reduced[0]  # Obtener como array 1D (sin .toarray())
     if len(overview_svd_array) < 100:
         # Si tiene menos de 100, rellenar con ceros
         overview_svd_array = np.pad(overview_svd_array, (0, 100 - len(overview_svd_array)))
@@ -111,29 +110,29 @@ if st.button('Predecir Categoría de Ganancia'):
         # Si tiene más de 100, tomar solo los primeros 100
         overview_svd_array = overview_svd_array[:100]
 
-overview_df_input = pd.DataFrame([overview_svd_array], columns=[str(i) for i in range(100)])
-overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
+    overview_df_input = pd.DataFrame([overview_svd_array], columns=[str(i) for i in range(100)])
+    overview_df_input = pd.DataFrame(overview_svd_reduced, columns=list(range(overview_svd_reduced.shape[1])))
 
 
-processed_df.index = [0]
-genre_df_input.index = [0]
-companies_df_input.index = [0]
-overview_df_input.index = [0]
+    processed_df.index = [0]
+    genre_df_input.index = [0]
+    companies_df_input.index = [0]
+    overview_df_input.index = [0]
 
-final_input_df = pd.concat([processed_df, genre_df_input, companies_df_input, overview_df_input], axis=1)
-final_input_df.columns = final_input_df.columns.astype(str)
+    final_input_df = pd.concat([processed_df, genre_df_input, companies_df_input, overview_df_input], axis=1)
+    final_input_df.columns = final_input_df.columns.astype(str)
 
-# ⭐ AQUÍ ES LO IMPORTANTE: Asegurar que tenga exactamente las mismas columnas
-# Agregar columnas faltantes con 0 si es necesario
-for col in model_feature_names:
-    if col not in final_input_df.columns:
-        final_input_df[col] = 0
+    # ⭐ AQUÍ ES LO IMPORTANTE: Asegurar que tenga exactamente las mismas columnas
+    # Agregar columnas faltantes con 0 si es necesario
+    for col in model_feature_names:
+        if col not in final_input_df.columns:
+            final_input_df[col] = 0
 
-# Seleccionar solo las columnas que el modelo espera, en el orden correcto
-final_input_df = final_input_df[model_feature_names]
+    # Seleccionar solo las columnas que el modelo espera, en el orden correcto
+    final_input_df = final_input_df[model_feature_names]
 
-# Realizar la predicción
-prediction_encoded = automl_model.predict(final_input_df)
-prediction_label = LE.inverse_transform(prediction_encoded)
+    # Realizar la predicción
+    prediction_encoded = automl_model.predict(final_input_df)
+    prediction_label = LE.inverse_transform(prediction_encoded)
 
-st.success(f'La categoría de ganancia predicha es: **{prediction_label[0]}**')
+    st.success(f'La categoría de ganancia predicha es: **{prediction_label[0]}**')
