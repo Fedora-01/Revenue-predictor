@@ -12,14 +12,14 @@ st.title('Clasificador de Ganancias de Películas de Animación')
 # Cargar el modelo y los preprocesadores
 @st.cache_resource #Esto sirve para usar cosas durante la ejecucion (no se puede almacenar en un database)
 def load_artifacts():
-    automl_model = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/automl_model.pkl')
-    column_transformer = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/column_transformer.pkl')
-    label_encoder_y = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/label_encoder_Y.pkl')
-    mlb_genres = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/multilabel_binarizer_genres.pkl')
-    mlb_companies = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/multilabel_binarizer_companies.pkl')
-    vectorizer = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/vectorizer.pkl')
-    svd = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/svd.pkl') 
-    model_feature_columns = joblib.load('/content/drive/MyDrive/Inteligencia Artificial/Modelo/feature_columns.pkl') # Cargar los nombres de las columnas
+    automl_model = joblib.load('automl_model.pkl')
+    column_transformer = joblib.load('column_transformer.pkl')
+    label_encoder_y = joblib.load('label_encoder_Y.pkl')
+    mlb_genres = joblib.load('multilabel_binarizer_genres.pkl')
+    mlb_companies = joblib.load('multilabel_binarizer_companies.pkl')
+    vectorizer = joblib.load('vectorizer.pkl')
+    svd = joblib.load('svd.pkl') 
+    model_feature_columns = joblib.load('feature_columns.pkl') # Cargar los nombres de las columnas
 
     return automl_model, column_transformer, label_encoder_y, mlb_genres, mlb_companies, vectorizer, svd, model_feature_columns
 
